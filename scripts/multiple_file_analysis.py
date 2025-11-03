@@ -205,5 +205,5 @@ for name, df in dfs_split_by_strain.items():
                                                                         CONCENTRATION_RESULT_COLS)
 
 outlier_removed_df = combine_split_dfs(result_dfs_split_by_strain)
-show_or_store_df(outlier_removed_df, "outlier_removed_df.xlsx")
+show_or_store_df(outlier_removed_df, "result.xlsx")
 

@@ -13,7 +13,7 @@ def path_to_project_root(project_name):
     return path
 
 
-PROJECT_ROOT_NAME = 'dwp_data_processing_and_analysis'
+PROJECT_ROOT_NAME = 'project_lab_data_processing'
 PATH_ROOT_DIR = Path(path_to_project_root(PROJECT_ROOT_NAME))
 PATH_DATA = PATH_ROOT_DIR / "data"
 PATH_DATA_IN = PATH_DATA / "in"

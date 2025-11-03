@@ -185,7 +185,7 @@ def create_grouped_boxplot_by_wt_and_name(input_df, target_column: str, y_axis_l
 
 
 if __name__ == "__main__":
-    df = pd.read_excel(PATH_DATA_OUT / "outlier_removed_df.xlsx")
+    df = pd.read_excel(PATH_DATA_OUT / "result.xlsx")
     create_grouped_boxplot_by_wt_and_name(df, target_column=C_ABS_Sup_Bn, y_axis_label=conc_per_OD)
     create_grouped_boxplot_by_wt_and_name(df, target_column=C_RFU_Cellsusp_Bn, y_axis_label=conc_per_OD)      #using cell-free calibration for cellsuspension samples is nonsense!
     create_grouped_boxplot_by_wt_and_name(df, target_column=C_RFU_Sup_Bn, y_axis_label=conc_per_OD)
