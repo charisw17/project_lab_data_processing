@@ -1,5 +1,4 @@
-data/in/*
-!data/in/.gitkeep
+
 data/out/*
 !data/out/.gitkeep
 

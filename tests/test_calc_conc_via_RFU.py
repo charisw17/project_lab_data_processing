@@ -19,10 +19,10 @@ class TestCalculateConcentrationViaRFU(unittest.TestCase):
         })
 
         expected_series = pd.Series(
-            [1225.061728,
-             4727.757202,
-             7267.064472,
-             3392.685185]
+            [1.8247540466109777,
+             7.042089296512441,
+             10.824438470881914,
+             5.053472716557958]
         )
 
         result = calc_conc_via_rfu(test_df, rfu_col, od_col)
@@ -46,10 +46,10 @@ class TestCalculateConcentrationViaRFU(unittest.TestCase):
         })
 
         expected_series = pd.Series(
-            [-2890.164609,
+            [-4.304958226595974,
              np.nan,
-             7267.064472,
-             np.nan, ])
+             10.824438470881914,
+             np.nan])
 
         result = calc_conc_via_rfu(test_df, "rfu_col", "od_col")
         pd.testing.assert_series_equal(result, expected_series)

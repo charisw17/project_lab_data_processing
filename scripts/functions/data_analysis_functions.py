@@ -4,6 +4,12 @@ from resources.constants_and_factors import COMPOUND_COEFFS, Compound, MG_TO_UG_
     LIN_REG_K_BN
 from scripts.Extract_purity_calibration_curve import BETANIN_PURITY_FACTOR
 
+def calc_rfu_per_od(df, rfu_col: str, od_col: str):
+    zero_check = df[od_col].eq(0.0)
+    if zero_check.any():
+        raise ZeroDivisionError("OD column contains zero values, which would lead to division by zero.")
+    return df[rfu_col] / df[od_col]
+
 
 def calc_conc_via_abs(df, abs_col: str, od_col: str, compound: Compound):
     ext_coeff, mw = COMPOUND_COEFFS[compound]

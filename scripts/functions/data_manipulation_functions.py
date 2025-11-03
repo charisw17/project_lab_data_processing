@@ -56,6 +56,14 @@ def collapse_df_to_means(df):
     result_df = pd.concat([str_cols_df, num_cols_df], axis=1)
     return result_df
 
+def collapse_to_means_per_group(df, group_by_col):
+    collapsed_dfs = []
+    for name, subset in df.groupby(group_by_col):
+        collapsed_dfs.append(collapse_df_to_means(subset))
+
+    result_df = pd.concat(collapsed_dfs, ignore_index=True)
+    return result_df
+
 
 def subtract_background_from_data(background_data_row, data_df, affected_columns):
     if background_data_row.shape[0] != 1:
@@ -64,6 +72,23 @@ def subtract_background_from_data(background_data_row, data_df, affected_columns
     return data_df.assign(
         **{col: data_df[col] - background_data_row.iloc[0][col] for col in affected_columns}
     )
+
+def subtract_grouped_background_from_data(background_data_df, data_df, group_by_col, affected_columns):
+    if background_data_df.shape[0] != len(background_data_df[group_by_col].unique()):
+        raise ValueError("background_data_df must contain exactly one row per group.")
+
+    result_df = data_df.copy()
+    for _, bg_row in background_data_df.iterrows():
+        bg_name = bg_row[group_by_col]
+        data_subset = result_df[result_df[group_by_col] == bg_name]
+
+        if data_subset.empty:
+            continue
+
+        corrected_subset = subtract_background_from_data(bg_row.to_frame().T, data_subset, affected_columns        )
+        result_df.loc[data_subset.index, affected_columns] = corrected_subset[affected_columns]
+
+    return result_df
 
 
 def apply_dilution_factor(df, multiplier_col, target_cols):

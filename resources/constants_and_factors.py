@@ -1,5 +1,7 @@
 import enum
 
+from matplotlib.pyplot import ylabel
+
 # Table Headers
 WELL = "Well"
 DWP = "DWP"
@@ -22,12 +24,21 @@ SUP_RFU_Bx = "Supernatant RFU_(470,551)"
 SUP_ABS_Bn = "Supernatant Abs_536 nm"
 SUP_ABS_Bl = "Supernatant Abs_424"
 
-STERILE = "\(sterile\)"
+STERILE = r"\(sterile\)"
+BG10_WT = "BSYBG10"
+BG11_WT = "BSYBG11"
+BG11dgut_WT = "BSYBG11gut1d"
 
 metadata_cols = [WELL, DWP, NAME, OLDNAME, ID, WT]
-cellsusp_data_cols = [CELLSUSP_OD, CELLSUSP_RFU_Bn, CELLSUSP_RFU_Bl, CELLSUSP_RFU_Bx, CELLSUSP_ABS_Bn,
-                      CELLSUSP_ABS_Bl]  # excl. DF
-sup_data_cols = [SUP_OD, SUP_RFU_Bn, SUP_RFU_Bl, SUP_RFU_Bx, SUP_ABS_Bn, SUP_ABS_Bl]  # excl. DF
+
+cellsusp_abs_data_cols = [CELLSUSP_OD, CELLSUSP_ABS_Bn, CELLSUSP_ABS_Bl]  # excl. DF
+cellsusp_rfu_data_cols = [CELLSUSP_RFU_Bn, CELLSUSP_RFU_Bl, CELLSUSP_RFU_Bx]  # excl. DF
+cellsusp_data_cols = cellsusp_abs_data_cols + cellsusp_rfu_data_cols
+
+sup_abs_data_cols = [SUP_OD, SUP_ABS_Bn, SUP_ABS_Bl]  # excl. DF
+sup_rfu_data_cols = [SUP_RFU_Bn, SUP_RFU_Bl, SUP_RFU_Bx]  # excl. DF
+sup_data_cols = sup_abs_data_cols + sup_rfu_data_cols
+
 all_data_cols = [CELLSUSP_DF] + cellsusp_data_cols + [SUP_DF] + sup_data_cols
 
 
@@ -42,7 +53,9 @@ C_ABS_Sup_Bn = f"{_betanin_concentration} in Supernatant via Abs [µg/mL]"
 C_ABS_Sup_Bl = "Betalamic Acid Concentration in Supernatant via Abs [µg/mL]"
 C_RFU_Sup_Bn = f"{_betanin_concentration} in Supernatant via RFU [µg/mL]"
 
-CONCENTRATION_RESULT_COLS = [C_ABS_Cellsusp_Bl, C_RFU_Cellsusp_Bn, C_ABS_Sup_Bn, C_ABS_Sup_Bl, C_RFU_Sup_Bn]
+RFUperOD_Cellsusp_Bn = "Relative Fluorescence of Betanin in Cellsuspension [RFU/OD]"
+
+CONCENTRATION_RESULT_COLS = [C_ABS_Cellsusp_Bl, C_RFU_Cellsusp_Bn, C_ABS_Sup_Bn, C_ABS_Sup_Bl, C_RFU_Sup_Bn, RFUperOD_Cellsusp_Bn]
 
 # C_RFU_Sup_Bl = "Betalamic Acid Concentration in Supernatant via RFU [µg/mL] (NONSENSE! NO BL STANDARD!)"
 
@@ -80,3 +93,5 @@ COMPOUND_COEFFS = {
     Compound.BETALAMIC_ACID: (EXTINCTION_COEFF_BL, MW_BL),
     Compound.BETANIDIN: (EXTINCTION_COEFF_BD, MW_BD)
 }
+
+# Plotting

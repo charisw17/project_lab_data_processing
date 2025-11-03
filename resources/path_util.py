@@ -18,6 +18,7 @@ PATH_ROOT_DIR = Path(path_to_project_root(PROJECT_ROOT_NAME))
 PATH_DATA = PATH_ROOT_DIR / "data"
 PATH_DATA_IN = PATH_DATA / "in"
 PATH_DATA_OUT = PATH_DATA / "out"
+PATH_TEST_DATA = PATH_ROOT_DIR / "tests" / "data"
 
 
 def show_or_store_df(df, file_name, store_as_excel=True):

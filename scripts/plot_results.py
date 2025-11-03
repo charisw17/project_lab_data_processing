@@ -1,8 +1,10 @@
 import pandas as pd
 from matplotlib import pyplot as plt
+from matplotlib.lines import Line2D
+
 
 from resources.constants_and_factors import WT, NAME, C_ABS_Sup_Bn, C_RFU_Cellsusp_Bn, \
-    C_RFU_Sup_Bn
+    C_RFU_Sup_Bn, RFUperOD_Cellsusp_Bn
 from resources.path_util import PATH_DATA_OUT, sanitize_filename
 
 
@@ -18,6 +20,11 @@ BG10 = "BG10"
 BG10_GUT1D = BG10 + gut1d
 BG11 = "BG11"
 BG11_GUT1D = BG11 + gut1d
+
+# Y-AXIS PLOT LABELS
+conc_per_OD = "Concentration [µg/mL] normalized to cell density"
+rfu_per_OD = "Relative Fluorescence Units normalized to cell density [RFU/OD]"
+
 
 def correct_nomenclature_for_legend(strain_name: str) -> str:
     strain_name = BSY + strain_name
@@ -57,7 +64,7 @@ def remove_strain_name_prefixes(strain_names: list[str]) -> list[str]:
     return result
 
 
-def create_grouped_boxplot_by_wt_and_name(input_df, target_column: str, figsize=(14, 8), annotate_with_median: bool = False):
+def create_grouped_boxplot_by_wt_and_name(input_df, target_column: str, y_axis_label: str, figsize=(14, 8), annotate_with_median: bool = False, show_overall_mean: bool = False):
     plot_df = input_df.copy()
 
     wt_order = [BG10, BG11, BG10_GUT1D, BG11_GUT1D]
@@ -148,14 +155,24 @@ def create_grouped_boxplot_by_wt_and_name(input_df, target_column: str, figsize=
     # Add shaded area below y=0
     ax.fill_between([min(positions) - 1, max(positions) + 1], y1=0, y2=ax.get_ylim()[0], color='gray', alpha=0.3)
 
+    # Overall mean line across all plotted data
+    if show_overall_mean:
+        overall_mean = float(pd.concat(plot_data).mean())
+        ax.axhline(y=overall_mean, color='red', linestyle=':', linewidth=1.5)
+        # optional small label near left axis
+        xmin, _ = ax.get_xlim()
+        ax.text(xmin, overall_mean, f"Mean={overall_mean:.3f}", va='bottom', ha='left', fontsize=9, color='red')
+
     # LABELS AND TITLES
-    plt.ylabel("Concentration [µg/mL] normalized to cell density ")
+    plt.ylabel(f"{y_axis_label} ")
     plt.title(f"{target_column}")
     plt.xticks(rotation=45, ha='right')
 
     legend_elements = [
         plt.Rectangle((0, 0), 1, 1, facecolor=color, alpha=0.7, label=correct_nomenclature_for_legend(wt))
         for wt, color in wt_colors.items() if wt in unique_wts_in_data]
+    if show_overall_mean:
+        legend_elements.append(Line2D([0], [0], color='red', linestyle=':', linewidth=1.5, label='Overall mean'))
     plt.legend(handles=legend_elements, title="Strain Background", bbox_to_anchor=(0.5, -0.1), loc='upper center', ncol=4)
 
     ax.margins(x=0.01)
@@ -169,6 +186,9 @@ def create_grouped_boxplot_by_wt_and_name(input_df, target_column: str, figsize=
 
 if __name__ == "__main__":
     df = pd.read_excel(PATH_DATA_OUT / "outlier_removed_df.xlsx")
-    create_grouped_boxplot_by_wt_and_name(df, target_column=C_ABS_Sup_Bn, annotate_with_median=False)
-    create_grouped_boxplot_by_wt_and_name(df, target_column=C_RFU_Cellsusp_Bn, annotate_with_median=False)
-    create_grouped_boxplot_by_wt_and_name(df, target_column=C_RFU_Sup_Bn, annotate_with_median=False)
+    create_grouped_boxplot_by_wt_and_name(df, target_column=C_ABS_Sup_Bn, y_axis_label=conc_per_OD)
+    create_grouped_boxplot_by_wt_and_name(df, target_column=C_RFU_Cellsusp_Bn, y_axis_label=conc_per_OD)      #using cell-free calibration for cellsuspension samples is nonsense!
+    create_grouped_boxplot_by_wt_and_name(df, target_column=C_RFU_Sup_Bn, y_axis_label=conc_per_OD)
+
+    create_grouped_boxplot_by_wt_and_name(df, target_column=RFUperOD_Cellsusp_Bn, y_axis_label=rfu_per_OD)
+
