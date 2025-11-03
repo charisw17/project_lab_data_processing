@@ -1,7 +1,6 @@
-# Project-lab-data-processing
+# Project Lab Data Processing
 
-Supplementary code for ... at ...
-
+Supplementary code for Data Processing Pipeline used for Project Lab Report of C. Wardell at TU Graz.
 
 ## Usage
 
